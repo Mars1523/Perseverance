@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+//import frc.team1523.robot.commands.TurnCommand;
 import frc.team1523.robot.subsystems.*;
 
 public class RobotContainer {
@@ -44,19 +45,23 @@ public class RobotContainer {
 
         intake.setDefaultCommand(new RunCommand(() -> {
             intake.setIntakeSpeed(primaryController.getY(GenericHID.Hand.kRight));
-            intake.setWristSpeed(-alternateController.getY(GenericHID.Hand.kRight));
+            intake.setWristSpeed(alternateController.getY(GenericHID.Hand.kLeft));
         }, intake));
 
         colorWheel.setDefaultCommand(new RunCommand(() -> {
             colorWheel.setExtendSpeed(alternateController.getX(GenericHID.Hand.kRight));
             colorWheel.setSpinySpeed(alternateController.getX(GenericHID.Hand.kLeft));
         }, colorWheel));
+
+        shooter.setDefaultCommand(new RunCommand(() -> {
+            shooter.testingSetMotorSpeed(alternateController.getY(GenericHID.Hand.kRight));
+        }, shooter));
     }
 
     private void configureButtonBindings() {
         new JoystickButton(primaryController, XboxController.Button.kBumperRight.value)
-                .whenPressed(new InstantCommand(() -> shooter.setMotorSpeed(1)))
-                .whenReleased(new InstantCommand(() -> shooter.setMotorSpeed(0)));
+                .whenPressed(new InstantCommand(shooter:: endableShooter))
+                .whenReleased(new InstantCommand(shooter::disableShooter));
     }
 
     public Command getAutonomousCommand() {
