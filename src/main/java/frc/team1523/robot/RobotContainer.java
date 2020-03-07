@@ -55,8 +55,8 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         new JoystickButton(primaryController, XboxController.Button.kBumperRight.value)
-                .whenPressed(new RunCommand(() -> shooter.setMotorSpeed(1)))
-                .whenReleased(new RunCommand(() -> shooter.setMotorSpeed(0)));
+                .whenPressed(new InstantCommand(() -> shooter.setMotorSpeed(1)))
+                .whenReleased(new InstantCommand(() -> shooter.setMotorSpeed(0)));
     }
 
     public Command getAutonomousCommand() {
