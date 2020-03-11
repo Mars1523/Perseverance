@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ColorWheel extends SubsystemBase {
-   private final Spark extend = new Spark(0);
-   private final Spark spinyWheel = new Spark(1);
+    private final Spark extend = new Spark(0);
+    private final Spark spinyWheel = new Spark(1);
 
     public void setExtendSpeed(double speed) {
         extend.set(speed);

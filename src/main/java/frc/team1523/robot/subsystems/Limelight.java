@@ -10,11 +10,14 @@ package frc.team1523.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.MedianFilter;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+
+import static frc.team1523.robot.Constants.LimelightConstants.*;
 
 public class Limelight extends SubsystemBase {
     // Create variables for the different values given from the limelight
@@ -25,6 +28,9 @@ public class Limelight extends SubsystemBase {
     private double targetArea; // Returns a value of the percentage of the image the target takes
     private double targetValue; // Sends 1 if a target is detected, 0 if none are present
     // Create a network table for the limelight
+    private MedianFilter distanceFilter = new MedianFilter(35);
+
+
     private NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
     private ShuffleboardTab limelightTab = Shuffleboard.getTab("Limelight data");
     private NetworkTableEntry limelightXOffsetEntry = limelightTab
@@ -94,10 +100,12 @@ public class Limelight extends SubsystemBase {
      * distance)
      */
     public double limelightDistance() {
-        throw new UnsupportedOperationException();
-//        return (kPortHeight - kLimelightHeight) / Math.tan(Math.toRadians(kLimelightAngle + yOffset) + kLimelightOffset);
+        return (kPortHeight - kLimelightHeight) / Math.tan(Math.toRadians(kLimelightAngle + yOffset) + kLimelightOffset);
     }
 
+    public double filteredLimelightDistance() {
+        return distanceFilter.calculate(limelightDistance());
+    }
     /**
      * Returns the value of the pipeline from the network table
      *

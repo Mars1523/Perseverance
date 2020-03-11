@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 
 @SuppressWarnings("unused")
-public class Leds{
+public class Leds {
     private SerialPort serial;
     private LedPattern last;
     private boolean warning = false;

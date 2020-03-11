@@ -1,6 +1,9 @@
 package frc.team1523.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -8,7 +11,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-//import frc.team1523.robot.commands.TurnCommand;
+import frc.team1523.robot.commands.DefaultDriveCommand;
+import frc.team1523.robot.commands.DeployLift;
+import frc.team1523.robot.commands.LimelightTurnToTarget;
+import frc.team1523.robot.commands.TurnCommand;
 import frc.team1523.robot.subsystems.*;
 
 public class RobotContainer {
@@ -26,49 +32,85 @@ public class RobotContainer {
     private final Intake intake = new Intake();
     private final Limelight limelight = new Limelight();
     private final Shooter shooter = new Shooter();
-    private final Turret turret = new Turret();
-    private final ColorWheel colorWheel = new ColorWheel();
     private final Leds leds = new Leds();
+    private final Lift lift = new Lift();
+    private final Climb climb = new Climb();
 
+    private final NetworkTableEntry climbReversalEnabledEntry = Shuffleboard.getTab("Debug")
+            .add("Climb whinch reversal", false)
+            .getEntry();
 
     public RobotContainer() {
         configureButtonBindings();
+
+        climbReversalEnabledEntry.setBoolean(false);
 
         chooser.setDefaultOption("Default Auto", kDefaultAuto);
         chooser.addOption("My Auto", kCustomAuto);
         Shuffleboard.getTab("Drive").add("Auto choices", chooser);
 
-        drivetrain.setDefaultCommand(new RunCommand(() ->
-                drivetrain.drive(-primaryController.getY(GenericHID.Hand.kLeft),
-                        primaryController.getX(GenericHID.Hand.kLeft) * 0.8),
-                drivetrain));
+        Shuffleboard.getTab("Debug").add(new PowerDistributionPanel());
+
+        drivetrain.setDefaultCommand(new DefaultDriveCommand(primaryController, drivetrain));
 
         intake.setDefaultCommand(new RunCommand(() -> {
-            intake.setIntakeSpeed(primaryController.getY(GenericHID.Hand.kRight));
-            intake.setWristSpeed(alternateController.getY(GenericHID.Hand.kLeft));
+            intake.setIntakeSpeed(-alternateController.getY(GenericHID.Hand.kLeft));
+            double raw = -alternateController.getY(GenericHID.Hand.kRight);
+            double wrist = Math.copySign(Math.pow(raw, 2), raw);
+
+            intake.setWristSetpoint(intake.getWristSetpoint() + (wrist * 6));
         }, intake));
 
-        colorWheel.setDefaultCommand(new RunCommand(() -> {
-            colorWheel.setExtendSpeed(alternateController.getX(GenericHID.Hand.kRight));
-            colorWheel.setSpinySpeed(alternateController.getX(GenericHID.Hand.kLeft));
-        }, colorWheel));
+//        shooter.setDefaultCommand(new RunCommand(() -> {
+//            shooter.testingSetMotorSpeed(alternateController.getY(GenericHID.Hand.kRight));
+//        }, shooter));
 
-        shooter.setDefaultCommand(new RunCommand(() -> {
-            shooter.testingSetMotorSpeed(alternateController.getY(GenericHID.Hand.kRight));
-        }, shooter));
+        CameraServer.getInstance().startAutomaticCapture();
     }
 
     private void configureButtonBindings() {
         new JoystickButton(primaryController, XboxController.Button.kBumperRight.value)
-                .whenPressed(new InstantCommand(shooter:: endableShooter))
+                .whenPressed(new InstantCommand(shooter::enableShooter))
                 .whenReleased(new InstantCommand(shooter::disableShooter));
+
+        new JoystickButton(primaryController, XboxController.Button.kA.value)
+                .whileActiveContinuous(new RunCommand(drivetrain::alarm));
+
+        new JoystickButton(primaryController, XboxController.Button.kStart.value)
+                .whenPressed(new InstantCommand(limelight::enableLeds));
+
+        new JoystickButton(primaryController, XboxController.Button.kBack.value)
+                .whenPressed(new InstantCommand(limelight::disableLeds));
+
+        new JoystickButton(primaryController, XboxController.Button.kB.value)
+                .whileActiveContinuous(new LimelightTurnToTarget(drivetrain, limelight));
+
+        new JoystickButton(alternateController, XboxController.Button.kX.value)
+                .whileActiveContinuous(new DeployLift(lift, false));
+
+        new JoystickButton(alternateController, XboxController.Button.kY.value)
+                .whileActiveContinuous(new DeployLift(lift, true));
+
+        new JoystickButton(alternateController, XboxController.Button.kB.value)
+                .whenPressed(new InstantCommand(climb::startClimbing, climb))
+                .whenReleased(new InstantCommand(climb::stopClimbing, climb));
+
+        new JoystickButton(alternateController, XboxController.Button.kA.value)
+                .whenPressed(new InstantCommand(() -> {
+                    if (climbReversalEnabledEntry.getBoolean(false)) {
+                        climb.startDescending();
+                    }
+                }, climb))
+                .whenReleased(new InstantCommand(climb::stopClimbing, climb));
+
+
     }
 
     public Command getAutonomousCommand() {
         String m_autoSelected = chooser.getSelected();
         switch (m_autoSelected) {
             case kCustomAuto:
-                return new InstantCommand();
+                return new TurnCommand(90, drivetrain);
             case kDefaultAuto:
             default:
                 return new InstantCommand();
