@@ -1,6 +1,6 @@
 # Perseverance - 2020
 
-[![Build Status](https://travis-ci.com/Mars1523/2020Robot.svg?token=9wnZ4P5zqisSKzJ5PbWZ&branch=master)](https://travis-ci.org/Mars1523/2020Robot)
+[![Java CI](https://github.com/Mars1523/Perseverance/workflows/Robot%20CI/badge.svg)](https://github.com/Mars1523/Perseverance/actions)
 [![FRC 2020: INFINITE RECHARGE](https://img.shields.io/badge/FRC-2020%20|%20INFINITE%20RECHARGE-lightgrey.svg)](https://www.firstinspires.org/robotics/frc/)
 
 ![Language: Java](https://img.shields.io/badge/Language-Java-b07219.svg)
