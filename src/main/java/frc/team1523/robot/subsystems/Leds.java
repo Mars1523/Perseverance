@@ -20,7 +20,7 @@ public class Leds {
     }
 
     public void startAllianceFader() {
-        if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Red) {
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
             writePattern(LedPattern.RedFader);
         } else {
             writePattern(LedPattern.BlueFader);

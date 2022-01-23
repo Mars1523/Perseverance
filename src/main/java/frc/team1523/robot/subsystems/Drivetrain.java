@@ -4,17 +4,16 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1523.robot.Constants;
 
@@ -25,8 +24,8 @@ public class Drivetrain extends SubsystemBase {
     private final WPI_TalonFX rightFront = new WPI_TalonFX(5);
     private final AHRS navx = new AHRS();
 
-    private final SpeedController leftMotors = new SpeedControllerGroup(leftFront, leftRear);
-    private final SpeedController rightMotors = new SpeedControllerGroup(rightFront, rightRear);
+    private final MotorControllerGroup leftMotors = new MotorControllerGroup(leftFront, leftRear);
+    private final MotorControllerGroup rightMotors = new MotorControllerGroup(rightFront, rightRear);
     private final DifferentialDrive robotDrive = new DifferentialDrive(leftMotors, rightMotors);
 
     private final PIDController leftPIDController = new PIDController(1, 0, 0);
@@ -56,6 +55,8 @@ public class Drivetrain extends SubsystemBase {
         rightRear.setNeutralMode(NeutralMode.Brake);
         leftRear.setNeutralMode(NeutralMode.Brake);
         rightFront.setNeutralMode(NeutralMode.Brake);
+
+        rightMotors.setInverted(true);
 
         // Don't panic when raw voltages are being set by the pid loops
         robotDrive.setSafetyEnabled(false);
@@ -105,7 +106,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getRightDistance() {
-        return (rightFront.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick
+        return -(rightFront.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick
                 + rightRear.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick
         ) / 2.0;
     }
@@ -137,6 +138,6 @@ public class Drivetrain extends SubsystemBase {
                 rightFront.getSelectedSensorVelocity() * Constants.DriveConstants.kDistancePerTick,
                 speeds.rightMetersPerSecond);
         leftMotors.setVoltage(leftOutput + leftFeedforward);
-        rightMotors.setVoltage(rightOutput + rightFeedforward);
+        rightMotors.setVoltage(-(rightOutput + rightFeedforward));
     }
 }

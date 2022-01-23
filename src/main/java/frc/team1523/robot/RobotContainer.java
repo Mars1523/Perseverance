@@ -2,8 +2,7 @@ package frc.team1523.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -49,27 +48,27 @@ public class RobotContainer {
         chooser.addOption("My Auto", kCustomAuto);
         Shuffleboard.getTab("Drive").add("Auto choices", chooser);
 
-        Shuffleboard.getTab("Debug").add(new PowerDistributionPanel());
+        Shuffleboard.getTab("Debug").add(new PowerDistribution());
 
         drivetrain.setDefaultCommand(new DefaultDriveCommand(primaryController, drivetrain));
 
         intake.setDefaultCommand(new RunCommand(() -> {
-            intake.setIntakeSpeed(-alternateController.getY(GenericHID.Hand.kLeft));
-            double raw = -alternateController.getY(GenericHID.Hand.kRight);
+            intake.setIntakeSpeed(-alternateController.getLeftY());
+            double raw = -alternateController.getRightY();
             double wrist = Math.copySign(Math.pow(raw, 2), raw);
 
             intake.setWristSetpoint(intake.getWristSetpoint() + (wrist * 6));
         }, intake));
 
 //        shooter.setDefaultCommand(new RunCommand(() -> {
-//            shooter.testingSetMotorSpeed(alternateController.getY(GenericHID.Hand.kRight));
+//            shooter.testingSetMotorSpeed(alternateController.getRightY());
 //        }, shooter));
 
-        CameraServer.getInstance().startAutomaticCapture();
+        CameraServer.startAutomaticCapture();
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(primaryController, XboxController.Button.kBumperRight.value)
+        new JoystickButton(primaryController, XboxController.Button.kRightBumper.value)
                 .whenPressed(new InstantCommand(shooter::enableShooter))
                 .whenReleased(new InstantCommand(shooter::disableShooter));
 

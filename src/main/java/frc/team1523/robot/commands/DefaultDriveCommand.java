@@ -1,8 +1,7 @@
 package frc.team1523.robot.commands;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.SlewRateLimiter;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -39,7 +38,7 @@ public class DefaultDriveCommand extends CommandBase {
         if (fancyDriveEntry.getBoolean(true)) {
             // Get the x speed. We are inverting this because Xbox controllers return
             // negative values when we push forward.
-            double rawX = primaryController.getX(GenericHID.Hand.kLeft);
+            double rawX = primaryController.getLeftX();
 
             final double rot =
                     speedLimiter.calculate(deadband(rawX, .1))
@@ -49,7 +48,7 @@ public class DefaultDriveCommand extends CommandBase {
             // positive value when we pull to the left (remember, CCW is positive in
             // mathematics). Xbox controllers return positive values when you pull to
             // the right by default.
-            double rawY = primaryController.getY(GenericHID.Hand.kRight);
+            double rawY = primaryController.getRightY();
             final double xSpeed =
                     rotLimiter.calculate(deadband(rawY, .1))
                             * Constants.DriveConstants.kMaxAngularSpeed;
@@ -57,8 +56,8 @@ public class DefaultDriveCommand extends CommandBase {
             drivetrain.fancyDrive(xSpeed, rot);
 
         } else {
-            drivetrain.boringDrive(-primaryController.getY(GenericHID.Hand.kRight),
-                    primaryController.getX(GenericHID.Hand.kLeft));
+            drivetrain.boringDrive(-primaryController.getRightY(),
+                    primaryController.getLeftX());
         }
     }
 }
