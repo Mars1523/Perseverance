@@ -7,6 +7,7 @@
 
 package frc.team1523.robot.subsystems;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -33,20 +34,20 @@ public class Limelight extends SubsystemBase {
 
     private NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
     private ShuffleboardTab limelightTab = Shuffleboard.getTab("Limelight data");
-    private NetworkTableEntry limelightXOffsetEntry = limelightTab
+    private GenericEntry limelightXOffsetEntry = limelightTab
             .add("Limelight X Offset", xOffset)
             .getEntry();
-    private NetworkTableEntry limelightYOffsetEntry = limelightTab
+    private GenericEntry limelightYOffsetEntry = limelightTab
             .add("Limelight Y Offset", yOffset)
             .getEntry();
-    private NetworkTableEntry limelightAreaPercentageEntry = limelightTab
+    private GenericEntry limelightAreaPercentageEntry = limelightTab
             .add("Limelight Area Percentage", targetArea)
             .getEntry();
-    private NetworkTableEntry limelightTargetCenteredEntry = limelightTab
+    private GenericEntry limelightTargetCenteredEntry = limelightTab
             .add("Target Centered", isTargetCentered())
             .withWidget(BuiltInWidgets.kBooleanBox)
             .getEntry();
-    private NetworkTableEntry limelightTargetDetectedEntry = limelightTab
+    private GenericEntry limelightTargetDetectedEntry = limelightTab
             .add("Target Detected", isTargetDetected())
             .withWidget(BuiltInWidgets.kBooleanBox)
             .getEntry();
@@ -158,10 +159,10 @@ public class Limelight extends SubsystemBase {
 
     public void log() {
         // Updates the SmartDashboard with limelight values
-        limelightXOffsetEntry.setNumber(xOffset);
-        limelightYOffsetEntry.setNumber(yOffset);
+        limelightXOffsetEntry.setDouble(xOffset);
+        limelightYOffsetEntry.setDouble(yOffset);
 
-        limelightAreaPercentageEntry.setNumber(targetArea);
+        limelightAreaPercentageEntry.setDouble(targetArea);
         limelightTargetCenteredEntry.setBoolean(isTargetCentered());
         limelightTargetDetectedEntry.setBoolean(isTargetDetected());
 //        limelightDistanceEntry.setNumber(limelightDistance());

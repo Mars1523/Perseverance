@@ -1,6 +1,8 @@
 package frc.team1523.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -10,7 +12,7 @@ public class Shooter extends SubsystemBase {
     private final CANSparkMax intakeAgitator = new CANSparkMax(11, CANSparkMax.MotorType.kBrushed);
 //    private final CANSparkMax shooterFeeder = new CANSparkMax(10, CANSparkMax.MotorType.kBrushless);
     private final CANSparkMax shooterMotor = new CANSparkMax(8, CANSparkMax.MotorType.kBrushless);
-    private final NetworkTableEntry speedEntry = Shuffleboard.getTab("Debug")
+    private final GenericEntry speedEntry = Shuffleboard.getTab("Debug")
             .add("Shooter Speed", 0.0)
             .getEntry();
     private boolean shooting = false;
@@ -31,7 +33,7 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        speedEntry.setNumber(shooterMotor.getEncoder().getVelocity());
+        speedEntry.setDouble(shooterMotor.getEncoder().getVelocity());
         if (shooting) {
             // Only load balls if we are at speed
             if (shooterMotor.getEncoder().getVelocity() > Constants.ShooterConstants.kShooterSpeedThreshold) {

@@ -1,5 +1,6 @@
 package frc.team1523.robot.commands;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
@@ -9,7 +10,7 @@ import frc.team1523.robot.Constants;
 import frc.team1523.robot.subsystems.Drivetrain;
 
 public class DefaultDriveCommand extends CommandBase {
-    private final NetworkTableEntry fancyDriveEntry = Shuffleboard.getTab("Drive")
+    private final GenericEntry fancyDriveEntry = Shuffleboard.getTab("Drive")
             .add("Fancy Drive", true)
             .getEntry();
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.

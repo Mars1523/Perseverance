@@ -1,6 +1,7 @@
 package frc.team1523.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
@@ -35,7 +36,7 @@ public class RobotContainer {
     private final Lift lift = new Lift();
     private final Climb climb = new Climb();
 
-    private final NetworkTableEntry climbReversalEnabledEntry = Shuffleboard.getTab("Debug")
+    private final GenericEntry climbReversalEnabledEntry = Shuffleboard.getTab("Debug")
             .add("Climb whinch reversal", false)
             .getEntry();
 
@@ -81,8 +82,8 @@ public class RobotContainer {
         new JoystickButton(primaryController, XboxController.Button.kBack.value)
                 .whenPressed(new InstantCommand(limelight::disableLeds));
 
-        new JoystickButton(primaryController, XboxController.Button.kB.value)
-                .whileActiveContinuous(new LimelightTurnToTarget(drivetrain, limelight));
+        // new JoystickButton(primaryController, XboxController.Button.kB.value)
+        //         .whileActiveContinuous(new LimelightTurnToTarget(drivetrain, limelight));
 
         new JoystickButton(alternateController, XboxController.Button.kX.value)
                 .whileActiveContinuous(new DeployLift(lift, false));

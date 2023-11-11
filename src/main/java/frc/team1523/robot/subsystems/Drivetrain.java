@@ -32,12 +32,13 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController rightPIDController = new PIDController(1, 0, 0);
 
     private final DifferentialDriveOdometry driveOdometry = new DifferentialDriveOdometry(
-            Rotation2d.fromDegrees(navx.getAngle()));
+            Rotation2d.fromDegrees(navx.getAngle()), 0, 0);
 
-    private final DifferentialDriveKinematics kinematics
-            = new DifferentialDriveKinematics(Constants.DriveConstants.kTrackWidth);
+    private final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(
+            Constants.DriveConstants.kTrackWidth);
     // practice bot
-//    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.175, 2.43, 0.25);
+    // private final SimpleMotorFeedforward feedforward = new
+    // SimpleMotorFeedforward(0.175, 2.43, 0.25);
     // comp bot
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.138, 2.45, .265);
 
@@ -75,8 +76,10 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void zeroSensors() {
-        driveOdometry.resetPosition(new Pose2d(0.0, 0.0, new Rotation2d()),
-                Rotation2d.fromDegrees(navx.getYaw()));
+        driveOdometry.resetPosition(Rotation2d.fromDegrees(navx.getYaw()), 0, 0,
+                new Pose2d(0.0, 0.0, new Rotation2d()));
+        // driveOdometry.resetPosition(new Pose2d(0.0, 0.0, new Rotation2d()), 0,0,
+        // Rotation2d.fromDegrees(navx.getYaw()));
         navx.zeroYaw();
         leftFront.setSelectedSensorPosition(0);
         rightFront.setSelectedSensorPosition(0);
@@ -101,14 +104,12 @@ public class Drivetrain extends SubsystemBase {
 
     public double getLeftDistance() {
         return (leftFront.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick
-                + leftRear.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick
-        ) / 2.0;
+                + leftRear.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick) / 2.0;
     }
 
     public double getRightDistance() {
         return -(rightFront.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick
-                + rightRear.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick
-        ) / 2.0;
+                + rightRear.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick) / 2.0;
     }
 
     public double getAverageDistance() {

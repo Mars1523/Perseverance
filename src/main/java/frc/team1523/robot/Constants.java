@@ -12,8 +12,8 @@ public final class Constants {
 
     public static final class ShooterConstants {
         // The minimum speed of the flywheel before we start loading balls
-        public static final int kShooterSpeedThreshold = 5000;
-        public static final int kFlywheelSpeed = 1;
+        public static final int kShooterSpeedThreshold = 1500;
+        public static final double kFlywheelSpeed = 0.4;
     }
 
     public static final class LimelightConstants {
@@ -25,8 +25,8 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
-        public static final double kMaxSpeed = 4.0; // Meters per second
-        public static final double kMaxAngularSpeed = 2 * Math.PI; // One rotation per second
+        public static final double kMaxSpeed = 1.0; // Meters per second
+        public static final double kMaxAngularSpeed = 1 * Math.PI; // One rotation per second
 
 
         public static final double kGearRatio = 10.71;
