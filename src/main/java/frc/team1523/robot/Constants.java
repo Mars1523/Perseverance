@@ -3,7 +3,7 @@ package frc.team1523.robot;
 // Define constants here as `static final`s
 public final class Constants {
     public static final class IntakeConstants {
-        public static final int kWristRange = 125;
+        public static final int kWristRange = 300;
     }
 
     public static final class LiftConstants {
@@ -12,12 +12,12 @@ public final class Constants {
 
     public static final class ShooterConstants {
         // The minimum speed of the flywheel before we start loading balls
-        public static final int kShooterSpeedThreshold = 1500;
-        public static final double kFlywheelSpeed = 0.4;
+        public static final int kShooterSpeedThreshold = 2500;
+        public static final float kFlywheelSpeed = 0.5f;
     }
 
     public static final class LimelightConstants {
-        //measurements in inches
+        // measurements in inches
         public static final int kPortHeight = 24;
         public static final int kLimelightHeight = 28;
         public static final int kLimelightAngle = 0;
@@ -25,9 +25,8 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
-        public static final double kMaxSpeed = 1.0; // Meters per second
-        public static final double kMaxAngularSpeed = 1 * Math.PI; // One rotation per second
-
+        public static final double kMaxSpeed = 4.0; // Meters per second
+        public static final double kMaxAngularSpeed = 2 * Math.PI; // One rotation per second
 
         public static final double kGearRatio = 10.71;
         // Meters (6 inch/2)

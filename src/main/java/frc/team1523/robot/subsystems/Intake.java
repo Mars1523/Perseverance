@@ -11,7 +11,6 @@ import frc.team1523.robot.Constants;
 public class Intake extends PIDSubsystem {
     private final CANSparkMax intake = new CANSparkMax(7, CANSparkMax.MotorType.kBrushed);
     private final CANSparkMax wrist = new CANSparkMax(9, CANSparkMax.MotorType.kBrushed);
-
     private final Encoder wristEncoder = new Encoder(4, 5);
 
     public Intake() {

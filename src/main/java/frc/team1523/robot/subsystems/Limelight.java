@@ -7,7 +7,6 @@
 
 package frc.team1523.robot.subsystems;
 
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -31,33 +30,13 @@ public class Limelight extends SubsystemBase {
     // Create a network table for the limelight
     private MedianFilter distanceFilter = new MedianFilter(35);
 
-
     private NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
     private ShuffleboardTab limelightTab = Shuffleboard.getTab("Limelight data");
-    private GenericEntry limelightXOffsetEntry = limelightTab
-            .add("Limelight X Offset", xOffset)
-            .getEntry();
-    private GenericEntry limelightYOffsetEntry = limelightTab
-            .add("Limelight Y Offset", yOffset)
-            .getEntry();
-    private GenericEntry limelightAreaPercentageEntry = limelightTab
-            .add("Limelight Area Percentage", targetArea)
-            .getEntry();
-    private GenericEntry limelightTargetCenteredEntry = limelightTab
-            .add("Target Centered", isTargetCentered())
-            .withWidget(BuiltInWidgets.kBooleanBox)
-            .getEntry();
-    private GenericEntry limelightTargetDetectedEntry = limelightTab
-            .add("Target Detected", isTargetDetected())
-            .withWidget(BuiltInWidgets.kBooleanBox)
-            .getEntry();
-    private NetworkTableEntry limelightLedEntry = NetworkTableInstance.getDefault()
-            .getTable("limelight")
-            .getEntry("ledMode");
 
-//    private NetworkTableEntry limelightDistanceEntry = Shuffleboard.getTab("Limelight data")
-//            .add("Distance (INCHES)", limelightDistance())
-//            .getEntry();
+    // private NetworkTableEntry limelightDistanceEntry =
+    // Shuffleboard.getTab("Limelight data")
+    // .add("Distance (INCHES)", limelightDistance())
+    // .getEntry();
 
     public Limelight() {
         // Reset the default settings and pipelines to the Limelight
@@ -93,7 +72,7 @@ public class Limelight extends SubsystemBase {
      */
     public double limelightAngle() {
         throw new UnsupportedOperationException();
-//        return (kLimelightAngle + yOffset);
+        // return (kLimelightAngle + yOffset);
     }
 
     /**
@@ -101,12 +80,14 @@ public class Limelight extends SubsystemBase {
      * distance)
      */
     public double limelightDistance() {
-        return (kPortHeight - kLimelightHeight) / Math.tan(Math.toRadians(kLimelightAngle + yOffset) + kLimelightOffset);
+        return (kPortHeight - kLimelightHeight)
+                / Math.tan(Math.toRadians(kLimelightAngle + yOffset) + kLimelightOffset);
     }
 
     public double filteredLimelightDistance() {
         return distanceFilter.calculate(limelightDistance());
     }
+
     /**
      * Returns the value of the pipeline from the network table
      *
@@ -131,23 +112,6 @@ public class Limelight extends SubsystemBase {
     /**
      * Enable the leds on the limelight
      */
-    public void enableLeds() {
-        limelightLedEntry.setNumber(LimelightConstants.kLedEnabled);
-    }
-
-    /**
-     * Disabled the leds on the limelight
-     */
-    public void disableLeds() {
-        limelightLedEntry.setNumber(LimelightConstants.kLedDisabled);
-    }
-
-    /**
-     * Blink the leds on the limelight
-     */
-    public void blinkLeds() {
-        limelightLedEntry.setNumber(LimelightConstants.kLedBlink);
-    }
 
     public void updateLimelight() {
         // Updates the values of the limelight on the network table
@@ -157,23 +121,8 @@ public class Limelight extends SubsystemBase {
         targetValue = limelightTable.getEntry("tv").getDouble(0.0);
     }
 
-    public void log() {
-        // Updates the SmartDashboard with limelight values
-        limelightXOffsetEntry.setDouble(xOffset);
-        limelightYOffsetEntry.setDouble(yOffset);
-
-        limelightAreaPercentageEntry.setDouble(targetArea);
-        limelightTargetCenteredEntry.setBoolean(isTargetCentered());
-        limelightTargetDetectedEntry.setBoolean(isTargetDetected());
-//        limelightDistanceEntry.setNumber(limelightDistance());
-    }
-
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-        updateLimelight();
-        log();
-    }
+    
+    
 
     public static final class LimelightConstants {
         public static final int kLedDisabled = 1;

@@ -76,9 +76,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void zeroSensors() {
-        driveOdometry.resetPosition(Rotation2d.fromDegrees(navx.getYaw()), 0, 0,
-                new Pose2d(0.0, 0.0, new Rotation2d()));
-        // driveOdometry.resetPosition(new Pose2d(0.0, 0.0, new Rotation2d()), 0,0,
+        // driveOdometry.resetPosition(new Pose2d(0.0, 0.0, new Rotation2d()),
         // Rotation2d.fromDegrees(navx.getYaw()));
         navx.zeroYaw();
         leftFront.setSelectedSensorPosition(0);
