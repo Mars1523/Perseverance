@@ -13,6 +13,16 @@ public class Shooter extends SubsystemBase {
     private final CANSparkMax shooterMotor = new CANSparkMax(8, CANSparkMax.MotorType.kBrushless);
 
     private boolean shooting = false;
+    private boolean slow = false;
+
+
+    public void slowYes() {
+        slow = true;
+    }
+
+    public void slowNo() {
+        slow = false;
+    }
 
     public Shooter() {
         intakeAgitator.restoreFactoryDefaults();
@@ -31,9 +41,18 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (shooting) {
+        if (shooting && !slow) {
             // Only load balls if we are at speed
             if (shooterMotor.getEncoder().getVelocity() > Constants.ShooterConstants.kShooterSpeedThreshold) {
+                intakeAgitator.set(1);
+            } else {
+                intakeAgitator.set(0);
+            }
+        }
+
+        if (shooting && slow) {
+            // Only load balls if we are at speed
+            if (shooterMotor.getEncoder().getVelocity() > Constants.ShooterConstants.kSlowShooterSpeedThreshold) {
                 intakeAgitator.set(1);
             } else {
                 intakeAgitator.set(0);
@@ -52,6 +71,11 @@ public class Shooter extends SubsystemBase {
         shooting = true;
         shooterMotor.set(Constants.ShooterConstants.kFlywheelSpeed);
         // shooterFeeder.set(Constants.ShooterConstants.kFlywheelSpeed);
+    }
+
+    public void enableShooterSlow() {
+        shooting = true;
+        shooterMotor.set(0.2);
     }
 
     public void disableShooter() {

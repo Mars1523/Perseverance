@@ -12,7 +12,7 @@ public class DefaultDriveCommand extends CommandBase {
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     private final SlewRateLimiter speedLimiter = new SlewRateLimiter(2.5);
-    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(6);
+    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
     private XboxController primaryController;
     private Drivetrain drivetrain;
 

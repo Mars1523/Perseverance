@@ -25,6 +25,7 @@ public class Intake extends PIDSubsystem {
         intake.set(speed);
     }
 
+    
     public double getWristSetpoint() {
         return getController().getSetpoint();
     }

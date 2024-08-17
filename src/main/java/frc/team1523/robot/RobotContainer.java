@@ -54,11 +54,22 @@ public class RobotContainer {
                 drivetrain.setDefaultCommand(new DefaultDriveCommand(primaryController, drivetrain));
 
                 intake.setDefaultCommand(new RunCommand(() -> {
-                        intake.setIntakeSpeed(primaryController.getYButton() ? -1 : 0);
-                        // double raw = primaryController.getXButton() ? 1 : -1;
 
+                        if (primaryController.getYButton()) {
+                                intake.setIntakeSpeed(-1);
+                        }
+                        if (primaryController.getLeftBumper()) {
+                                intake.setIntakeSpeed(0.5);
+                        }
+                        if (!primaryController.getYButton() && !primaryController.getLeftBumper()) {
+                                intake.setIntakeSpeed(0);
+                        }
+
+                        // double raw = primaryController.getXButton() ? 1 : -1;
+                        
                         if (primaryController.getXButton()) {
                                 raw = 1;
+
                         }
                         if (primaryController.getAButton()) {
                                 raw = -1;
@@ -71,41 +82,42 @@ public class RobotContainer {
                 // shooter.setDefaultCommand(new RunCommand(() -> {
                 // shooter.testingSetMotorSpeed(alternateController.getRightY());
                 // }, shooter));
-
-                CameraServer.startAutomaticCapture();
         }
 
         private void configureButtonBindings() {
                 new JoystickButton(primaryController, XboxController.Button.kStart.value)
-                                .whileActiveContinuous(new RunCommand(drivetrain::alarm));
+                                .whileTrue(new RunCommand(drivetrain::alarm));
 
                 new JoystickButton(primaryController, XboxController.Button.kB.value)
-                                .whenPressed(new InstantCommand(shooter::enableShooter))
-                                .whenReleased(new InstantCommand(shooter::disableShooter));
+                                .onTrue(new InstantCommand(shooter::slowNo))
+                                .onTrue(new InstantCommand(shooter::enableShooter))
+                                .onFalse(new InstantCommand(shooter::disableShooter));
 
-                new JoystickButton(alternateController, XboxController.Button.kA.value)
-                                .whileActiveContinuous(new RunCommand(drivetrain::alarm));
+                new JoystickButton(primaryController, XboxController.Button.kBack.value)
+                                .onTrue(new InstantCommand(shooter::slowYes))
+                                .onTrue(new InstantCommand(shooter::enableShooterSlow))
+                                .onFalse(new InstantCommand(shooter::disableShooter));
 
                 new JoystickButton(primaryController, XboxController.Button.kRightBumper.value)
-                                .whileActiveContinuous(new LimelightTurnToTarget(drivetrain, limelight));
+                                .whileTrue(new LimelightTurnToTarget(drivetrain, limelight));
 
-                new JoystickButton(alternateController, XboxController.Button.kX.value)
-                                .whileActiveContinuous(new DeployLift(lift, false));
+                //new JoystickButton(alternateController, XboxController.Button.kX.value)
+                  //              .whileTrue(new DeployLift(lift, false));
 
-                new JoystickButton(alternateController, XboxController.Button.kY.value)
-                                .whileActiveContinuous(new DeployLift(lift, true));
+                //new JoystickButton(alternateController, XboxController.Button.kY.value)
+                  //              .whileTrue(new DeployLift(lift, true));
 
-                new JoystickButton(alternateController, XboxController.Button.kB.value)
-                                .whenPressed(new InstantCommand(climb::startClimbing, climb))
-                                .whenReleased(new InstantCommand(climb::stopClimbing, climb));
+                //new JoystickButton(alternateController, XboxController.Button.kB.value)
+                  //              .onTrue(new InstantCommand(climb::startClimbing, climb))
+                  //              .onFalse(new InstantCommand(climb::stopClimbing, climb));
 
-                new JoystickButton(alternateController, XboxController.Button.kA.value)
-                                .whenPressed(new InstantCommand(() -> {
-                                        if (climbReversalEnabledEntry.getBoolean(false)) {
-                                                climb.startDescending();
-                                        }
-                                }, climb))
-                                .whenReleased(new InstantCommand(climb::stopClimbing, climb));
+                //new JoystickButton(alternateController, XboxController.Button.kA.value)
+                  //              .onTrue(new InstantCommand(() -> {
+                  //                      if (climbReversalEnabledEntry.getBoolean(false)) {
+                  //                              climb.startDescending();
+                  //                      }
+                  //              }, climb))
+                  //              .onFalse(new InstantCommand(climb::stopClimbing, climb));
 
         }
 
