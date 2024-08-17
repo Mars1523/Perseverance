@@ -25,8 +25,8 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
-        public static final double kMaxSpeed = 1.0; // Meters per second
-        public static final double kMaxAngularSpeed = 2 * Math.PI; // One rotation per second
+        public static final double kMaxSpeed = 1.5; // Meters per second
+        public static final double kMaxAngularSpeed = Math.PI*.9; // One rotation per second
 
         public static final double kGearRatio = 10.71;
         // Meters (6 inch/2)
