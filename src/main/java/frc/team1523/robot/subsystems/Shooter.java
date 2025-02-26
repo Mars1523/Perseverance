@@ -1,16 +1,22 @@
 package frc.team1523.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1523.robot.Constants;
 
 public class Shooter extends SubsystemBase {
-    private final CANSparkMax intakeAgitator = new CANSparkMax(11, CANSparkMax.MotorType.kBrushed);
+    private final SparkMax intakeAgitator = new SparkMax(11, SparkMax.MotorType.kBrushed);
     // private final CANSparkMax shooterFeeder = new CANSparkMax(10,
     // CANSparkMax.MotorType.kBrushless);
-    private final CANSparkMax shooterMotor = new CANSparkMax(8, CANSparkMax.MotorType.kBrushless);
+    private final SparkMax shooterMotor = new SparkMax(8, SparkMax.MotorType.kBrushless);
 
     private boolean shooting = false;
     private boolean slow = false;
@@ -25,17 +31,16 @@ public class Shooter extends SubsystemBase {
     }
 
     public Shooter() {
-        intakeAgitator.restoreFactoryDefaults();
-        // shooterFeeder.restoreFactoryDefaults();
-        shooterMotor.restoreFactoryDefaults();
+        SparkBaseConfig agitatorConfig = new SparkMaxConfig().inverted(false);
+        intakeAgitator.configure(agitatorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        shooterMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-        // shooterFeeder.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        SparkBaseConfig shooterConfig = new SparkMaxConfig();
+        shooterConfig
+            .inverted(true)
+            .idleMode(IdleMode.kCoast)
+            .smartCurrentLimit(50);
 
-        shooterMotor.setSmartCurrentLimit(50);
-        intakeAgitator.setInverted(false);
-        // shooterFeeder.setInverted(false);
-        shooterMotor.setInverted(true);
+        shooterMotor.configure(shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     @Override

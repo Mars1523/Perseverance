@@ -4,11 +4,11 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team1523.robot.Constants;
 import frc.team1523.robot.subsystems.Drivetrain;
 
-public class DefaultDriveCommand extends CommandBase {
+public class DefaultDriveCommand extends Command {
 
     // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     private final SlewRateLimiter speedLimiter = new SlewRateLimiter(2.5);

@@ -1,10 +1,10 @@
 package frc.team1523.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.team1523.robot.Constants;
 import frc.team1523.robot.subsystems.Lift;
 
-public class DeployLift extends CommandBase {
+public class DeployLift extends Command {
     private final Lift lift;
     private final boolean reverse;
 

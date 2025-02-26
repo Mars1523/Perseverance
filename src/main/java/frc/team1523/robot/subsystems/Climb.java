@@ -1,15 +1,25 @@
 package frc.team1523.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climb extends SubsystemBase {
-    private final CANSparkMax leftMotor = new CANSparkMax(12, CANSparkMax.MotorType.kBrushed);
-    private final CANSparkMax rightMotor = new CANSparkMax(13, CANSparkMax.MotorType.kBrushed);
+    private final SparkMax leftMotor = new SparkMax(12, MotorType.kBrushed);
+    private final SparkMax rightMotor = new SparkMax(13, MotorType.kBrushed);
 
     public Climb() {
-        rightMotor.setInverted(true);
-        leftMotor.setInverted(false);
+        SparkBaseConfig invertedConfig = new SparkMaxConfig().inverted(true);
+        SparkBaseConfig noninvertedConfig = new SparkMaxConfig().inverted(false);
+
+
+        rightMotor.configure(invertedConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        leftMotor.configure(noninvertedConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void setMotorPower(double power) {

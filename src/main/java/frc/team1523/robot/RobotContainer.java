@@ -58,10 +58,10 @@ public class RobotContainer {
                         if (primaryController.getYButton()) {
                                 intake.setIntakeSpeed(-1);
                         }
-                        if (primaryController.getLeftBumper()) {
+                        if (primaryController.getLeftBumperButton()) {
                                 intake.setIntakeSpeed(0.5);
                         }
-                        if (!primaryController.getYButton() && !primaryController.getLeftBumper()) {
+                        if (!primaryController.getYButton() && !primaryController.getLeftBumperButton()) {
                                 intake.setIntakeSpeed(0);
                         }
 

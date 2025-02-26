@@ -1,19 +1,25 @@
 package frc.team1523.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1523.robot.Constants;
 
 public class Lift extends SubsystemBase {
-    private final CANSparkMax liftMotor = new CANSparkMax(14, CANSparkMaxLowLevel.MotorType.kBrushed);
+    private final SparkMax liftMotor = new SparkMax(14, MotorType.kBrushed);
     private final Encoder liftEncoder = new Encoder(0, 1);
 
     public Lift() {
         Shuffleboard.getTab("Debug").add("Lift Encoder", liftEncoder);
-        liftMotor.setInverted(true);
+        SparkBaseConfig invertedConfig = new SparkMaxConfig().inverted(true);
+        liftMotor.configure(invertedConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void setLiftPower(double power) {

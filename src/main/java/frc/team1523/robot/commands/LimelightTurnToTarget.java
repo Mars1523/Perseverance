@@ -2,13 +2,13 @@ package frc.team1523.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.MathUtil;
 import frc.team1523.robot.Constants;
 import frc.team1523.robot.subsystems.Drivetrain;
 import frc.team1523.robot.subsystems.Limelight;
 
-public class LimelightTurnToTarget extends CommandBase {
+public class LimelightTurnToTarget extends Command {
     private final PIDController turnPid;
     private final PIDController distancePid;
     private final Drivetrain drivetrain;

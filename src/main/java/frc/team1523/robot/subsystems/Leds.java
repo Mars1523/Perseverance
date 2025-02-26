@@ -1,5 +1,7 @@
 package frc.team1523.robot.subsystems;
 
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 
@@ -20,7 +22,8 @@ public class Leds {
     }
 
     public void startAllianceFader() {
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+
+        if (DriverStation.getAlliance() == Optional.of(DriverStation.Alliance.Red)) {
             writePattern(LedPattern.RedFader);
         } else {
             writePattern(LedPattern.BlueFader);

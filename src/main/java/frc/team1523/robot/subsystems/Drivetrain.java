@@ -1,32 +1,33 @@
 package frc.team1523.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MusicTone;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1523.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
-    private final WPI_TalonFX leftFront = new WPI_TalonFX(2);
-    private final WPI_TalonFX rightRear = new WPI_TalonFX(3);
-    private final WPI_TalonFX leftRear = new WPI_TalonFX(4);
-    private final WPI_TalonFX rightFront = new WPI_TalonFX(5);
-    private final AHRS navx = new AHRS();
+    private final TalonFX leftFront = new TalonFX(2);
+    private final TalonFX rightRear = new TalonFX(3);
+    private final TalonFX leftRear = new TalonFX(4);
+    private final TalonFX rightFront = new TalonFX(5);
+    private final AHRS navx = new AHRS(NavXComType.kMXP_SPI);
 
-    private final MotorControllerGroup leftMotors = new MotorControllerGroup(leftFront, leftRear);
-    private final MotorControllerGroup rightMotors = new MotorControllerGroup(rightFront, rightRear);
-    private final DifferentialDrive robotDrive = new DifferentialDrive(leftMotors, rightMotors);
+    private final DifferentialDrive robotDrive = new DifferentialDrive(leftFront::set, rightFront::set);
 
     private final PIDController leftPIDController = new PIDController(1, 0, 0);
     private final PIDController rightPIDController = new PIDController(1, 0, 0);
@@ -47,27 +48,32 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
         zeroSensors();
 
-        leftFront.configFactoryDefault();
-        rightRear.configFactoryDefault();
-        leftRear.configFactoryDefault();
-        rightFront.configFactoryDefault();
+        var leftConfigs = new TalonFXConfiguration();
+        leftConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        leftConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-        leftFront.setNeutralMode(NeutralMode.Brake);
-        rightRear.setNeutralMode(NeutralMode.Brake);
-        leftRear.setNeutralMode(NeutralMode.Brake);
-        rightFront.setNeutralMode(NeutralMode.Brake);
+        var rightConfigs = new TalonFXConfiguration();
+        rightConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        rightConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        
 
-        rightMotors.setInverted(true);
+        leftFront.getConfigurator().apply(leftConfigs);
+        leftRear.getConfigurator().apply(leftConfigs);
+        rightFront.getConfigurator().apply(leftConfigs);
+        rightRear.getConfigurator().apply(leftConfigs);
+
+        leftRear.setControl(new Follower(leftFront.getDeviceID(), false));
+        rightRear.setControl(new Follower(rightFront.getDeviceID(), false));
 
         // Don't panic when raw voltages are being set by the pid loops
         robotDrive.setSafetyEnabled(false);
     }
 
     public void alarm() {
-        leftRear.set(ControlMode.MusicTone, x + 450);
-        leftFront.set(ControlMode.MusicTone, x + 450);
-        rightRear.set(ControlMode.MusicTone, x + 450);
-        rightFront.set(ControlMode.MusicTone, x + 450);
+        leftRear.setControl(new MusicTone(x + 450));
+        leftFront.setControl(new MusicTone(x + 450));
+        rightRear.setControl(new MusicTone(x + 450));
+        rightFront.setControl(new MusicTone(x + 450));
         x = (x + 8) % 150;
     }
 
@@ -79,10 +85,10 @@ public class Drivetrain extends SubsystemBase {
         // driveOdometry.resetPosition(new Pose2d(0.0, 0.0, new Rotation2d()),
         // Rotation2d.fromDegrees(navx.getYaw()));
         navx.zeroYaw();
-        leftFront.setSelectedSensorPosition(0);
-        rightFront.setSelectedSensorPosition(0);
-        leftRear.setSelectedSensorPosition(0);
-        rightRear.setSelectedSensorPosition(0);
+        leftFront.setPosition(0);
+        rightFront.setPosition(0);
+        leftRear.setPosition(0);
+        rightRear.setPosition(0);
     }
 
     public void boringDrive(double xSpeed, double rotation) {
@@ -101,13 +107,13 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getLeftDistance() {
-        return (leftFront.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick
-                + leftRear.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick) / 2.0;
+        return (leftFront.getPosition().getValueAsDouble() * Constants.DriveConstants.kDistancePerTick
+                + leftRear.getPosition().getValueAsDouble() * Constants.DriveConstants.kDistancePerTick) / 2.0;
     }
 
     public double getRightDistance() {
-        return -(rightFront.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick
-                + rightRear.getSelectedSensorPosition() * Constants.DriveConstants.kDistancePerTick) / 2.0;
+        return -(rightFront.getPosition().getValueAsDouble() * Constants.DriveConstants.kDistancePerTick
+                + rightRear.getPosition().getValueAsDouble() * Constants.DriveConstants.kDistancePerTick) / 2.0;
     }
 
     public double getAverageDistance() {
@@ -131,12 +137,13 @@ public class Drivetrain extends SubsystemBase {
         final double rightFeedforward = feedforward.calculate(speeds.rightMetersPerSecond);
 
         final double leftOutput = leftPIDController.calculate(
-                leftFront.getSelectedSensorVelocity() * Constants.DriveConstants.kDistancePerTick,
+                leftFront.getVelocity().getValueAsDouble() * Constants.DriveConstants.kDistancePerTick,
                 speeds.leftMetersPerSecond);
         final double rightOutput = rightPIDController.calculate(
-                rightFront.getSelectedSensorVelocity() * Constants.DriveConstants.kDistancePerTick,
+                rightFront.getVelocity().getValueAsDouble() * Constants.DriveConstants.kDistancePerTick,
                 speeds.rightMetersPerSecond);
-        leftMotors.setVoltage(leftOutput + leftFeedforward);
-        rightMotors.setVoltage(-(rightOutput + rightFeedforward));
+        
+        leftFront.setVoltage(leftOutput + leftFeedforward);
+        rightFront.setVoltage(-(rightOutput + rightFeedforward));
     }
 }
