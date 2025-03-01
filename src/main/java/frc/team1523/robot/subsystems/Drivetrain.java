@@ -59,8 +59,8 @@ public class Drivetrain extends SubsystemBase {
 
         leftFront.getConfigurator().apply(leftConfigs);
         leftRear.getConfigurator().apply(leftConfigs);
-        rightFront.getConfigurator().apply(leftConfigs);
-        rightRear.getConfigurator().apply(leftConfigs);
+        rightFront.getConfigurator().apply(rightConfigs);
+        rightRear.getConfigurator().apply(rightConfigs);
 
         leftRear.setControl(new Follower(leftFront.getDeviceID(), false));
         rightRear.setControl(new Follower(rightFront.getDeviceID(), false));
