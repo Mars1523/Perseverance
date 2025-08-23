@@ -69,20 +69,12 @@ public class Drivetrain extends SubsystemBase {
         robotDrive.setSafetyEnabled(false);
     }
 
-    public void playFreq(int freq) {
-        leftRear.setControl(new MusicTone(x));
-        leftFront.setControl(new MusicTone(x));
-        rightRear.setControl(new MusicTone(x));
-        rightFront.setControl(new MusicTone(x));
-    }
-
     public void alarm() {
-        playFreq(x + 450);
+        leftRear.setControl(new MusicTone(x + 450));
+        leftFront.setControl(new MusicTone(x + 450));
+        rightRear.setControl(new MusicTone(x + 450));
+        rightFront.setControl(new MusicTone(x + 450));
         x = (x + 8) % 150;
-    }
-
-    public void alarmOff() {
-        playFreq(0);
     }
 
     public double getAngle() {

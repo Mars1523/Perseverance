@@ -86,8 +86,7 @@ public class RobotContainer {
 
         private void configureButtonBindings() {
                 new JoystickButton(primaryController, XboxController.Button.kStart.value)
-                                .whileTrue(new RunCommand(drivetrain::alarm))
-                                .onFalse(new RunCommand(drivetrain::alarmOff));
+                                .whileTrue(new RunCommand(drivetrain::alarm));
 
                 new JoystickButton(primaryController, XboxController.Button.kB.value)
                                 .onTrue(new InstantCommand(shooter::slowNo))
